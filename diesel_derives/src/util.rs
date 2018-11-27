@@ -4,6 +4,8 @@ use syn::*;
 pub use diagnostic_shim::*;
 use meta::*;
 
+use std::result::Result as StdResult;
+
 pub fn wrap_in_dummy_mod(const_name: Ident, item: TokenStream) -> TokenStream {
     quote! {
         #[allow(non_snake_case, unused_extern_crates, unused_imports)]
@@ -45,7 +47,7 @@ fn option_ty_arg(ty: &Type) -> Option<&Type> {
     }
 }
 
-pub fn ty_for_foreign_derive(item: &DeriveInput, flags: &MetaItem) -> Result<Type, Diagnostic> {
+pub fn ty_for_foreign_derive(item: &DeriveInput, flags: &MetaItem) -> StdResult<Type, Diagnostic> {
     if flags.has_flag("foreign_derive") {
         match item.data {
             Data::Struct(ref body) => match body.fields.iter().nth(0) {
